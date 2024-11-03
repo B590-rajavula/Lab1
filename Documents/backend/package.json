@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "back1",
   "version": "1.0.0",
   "description": "This is backend pgm",
   "main": "index.js",
@@ -11,5 +11,6 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.1"
-  }
+  },
+  "devDependencies": {}
 }
