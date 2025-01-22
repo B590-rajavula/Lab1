@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.utils.widget.MotionButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
     private lateinit var trueButton: Button
@@ -23,11 +24,21 @@ class MainActivity : AppCompatActivity() {
 
         trueButton.setOnClickListener {
             view: View->
-            Toast.makeText(
-                this,
-                R.string.correctToast,
-                Toast.LENGTH_SHORT
-            ).show()
+            Snackbar.make(view, R.string.correctToast, Snackbar.LENGTH_SHORT).show()
+//            Toast.makeText(
+//                this,
+//                R.string.correctToast,
+//                Toast.LENGTH_SHORT
+//            ).show()
+        }
+        falseButton.setOnClickListener {
+                view: View->
+            Snackbar.make(view, R.string.incorrectToast, Snackbar.LENGTH_SHORT).show()
+//            Toast.makeText(
+//                this,
+//                R.string.correctToast,
+//                Toast.LENGTH_SHORT
+//            ).show()
         }
 //        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
 //            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
