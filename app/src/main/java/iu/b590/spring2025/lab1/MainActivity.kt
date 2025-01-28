@@ -60,6 +60,10 @@ class MainActivity : AppCompatActivity() {
         binding.nextButton.setOnClickListener{
             currentIndex = (currentIndex+1)%questionBank.size
             updateQuestion()
+            binding.trueButton.isEnabled = true
+            binding.trueButton.isClickable = true
+            binding.falseButton.isEnabled = true
+            binding.falseButton.isClickable = true
         }
 
         binding.previousButton.setOnClickListener {
@@ -69,6 +73,10 @@ class MainActivity : AppCompatActivity() {
                 currentIndex-1
             }
             updateQuestion()
+            binding.trueButton.isEnabled = true
+            binding.trueButton.isClickable = true
+            binding.falseButton.isEnabled = true
+            binding.falseButton.isClickable = true
         }
 
         binding.questionTextView.setOnClickListener{
@@ -122,6 +130,13 @@ class MainActivity : AppCompatActivity() {
         } else {
             R.string.incorrect_toast
         }
+        binding.trueButton.isEnabled = false
+        binding.trueButton.isClickable = false
+        binding.falseButton.isEnabled = false
+        binding.falseButton.isClickable = false
+
+
+
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
     }
 }
