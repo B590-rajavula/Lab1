@@ -13,5 +13,6 @@
     <string name="next_button">NEXT</string>
     <string name="incorrect_toast">Incorrect</string>
     <string name="previous_button">PREVIOUS</string>
+    <string name="score_toast"> total percent: %d%%</string>
 
 </resources>

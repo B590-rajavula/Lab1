@@ -13,6 +13,9 @@ import androidx.core.view.WindowInsetsCompat
 import iu.b590.spring2025.lab1.databinding.ActivityMainBinding
 
 private const val TAG = "MainActivity"
+private  var count =0
+private  var ans =0
+private var percent = 0
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -126,10 +129,22 @@ class MainActivity : AppCompatActivity() {
         val correctAnswer = questionBank[currentIndex].answer
         val messageResId = if (userAnswer == correctAnswer) {
             R.string.correct_toast
-
+//            count++
         } else {
             R.string.incorrect_toast
         }
+        if(userAnswer == correctAnswer){
+            count++
+        }
+
+        ans++
+        if(ans==questionBank.size){
+            val percent = (count.toDouble() / questionBank.size) * 100
+            val scoreMessage = getString(R.string.score_toast, percent.toInt())
+            Toast.makeText(this, scoreMessage, Toast.LENGTH_LONG).show()
+        }
+
+
         binding.trueButton.isEnabled = false
         binding.trueButton.isClickable = false
         binding.falseButton.isEnabled = false
@@ -139,4 +154,6 @@ class MainActivity : AppCompatActivity() {
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
     }
+
+
 }
