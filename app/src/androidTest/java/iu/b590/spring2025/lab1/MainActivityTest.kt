@@ -48,5 +48,4 @@ class MainActivityTest {
         onView(withId(R.id.question_text_view))
             .check(matches(withText(R.string.question_oceans)))
     }
-
 }

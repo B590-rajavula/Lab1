@@ -16,6 +16,19 @@ class QuizViewModelTest{
     }
 
     @Test
+    fun verifiesCurrentQuestionAnswer() {
+        val savedStateHandle = SavedStateHandle()
+        val quizViewModel = QuizViewModel(savedStateHandle)
+
+        assertTrue(quizViewModel.currentQuestionAnswer)
+
+        quizViewModel.moveToNext()
+
+        assertTrue(quizViewModel.currentQuestionAnswer)  // Should be updated correctly
+
+    }
+
+    @Test
     fun wrapsAroundQuestionBank(){
         val savedStateHandle = SavedStateHandle(mapOf(CURRENT_INDEX_KEY to 5))
         val quizViewModel = QuizViewModel(savedStateHandle)
