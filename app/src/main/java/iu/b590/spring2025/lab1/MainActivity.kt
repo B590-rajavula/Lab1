@@ -1,12 +1,15 @@
 package iu.b590.spring2025.lab1
 
 import Question
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -21,6 +24,15 @@ private var percent = 0
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val quizViewModel: QuizViewModel by viewModels()
+
+    private val cheatLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {result ->
+        if(result.resultCode == Activity.RESULT_OK) {
+            quizViewModel.isCheater =
+                result.data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+        }
+    }
 //    private lateinit var trueButton: Button
 //    private lateinit var falseButton: Button
 
@@ -88,6 +100,14 @@ class MainActivity : AppCompatActivity() {
             binding.falseButton.isClickable = true
         }
 
+        binding.cheatButton?.setOnClickListener{
+//            val intent = Intent(this, CheatActivity::class.java)
+            val answerIsTrue = quizViewModel.currentQuestionAnswer
+            val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
+//            startActivity(intent)
+            cheatLauncher.launch(intent)
+        }
+
 //        binding.questionTextView.setOnClickListener{
 //            currentIndex = (currentIndex+1)%questionBank.size
 //            updateQuestion()
@@ -135,14 +155,22 @@ class MainActivity : AppCompatActivity() {
     private fun checkAnswer(userAnswer:Boolean) {
 //        val correctAnswer = questionBank[currentIndex].answer
         val correctAnswer = quizViewModel.currentQuestionAnswer
-        val messageResId = if (userAnswer == correctAnswer) {
-            R.string.correct_toast
+//        val messageResId = if (userAnswer == correctAnswer) {
+//            R.string.correct_toast
+////            count++
+//        } else {
+//            R.string.incorrect_toast
+//        }
+//        if(userAnswer == correctAnswer){
 //            count++
-        } else {
-            R.string.incorrect_toast
-        }
-        if(userAnswer == correctAnswer){
-            count++
+//        }
+        val messageResId = when {
+            quizViewModel.isCheater -> R.string.judgement_toast
+            userAnswer == correctAnswer -> {
+                count++
+                R.string.correct_toast}
+            else -> R.string.incorrect_toast
+
         }
 
         ans++
