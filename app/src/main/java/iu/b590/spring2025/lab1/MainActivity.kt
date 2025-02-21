@@ -29,8 +29,11 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) {result ->
         if(result.resultCode == Activity.RESULT_OK) {
-            quizViewModel.isCheater =
+            val cheated =
                 result.data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+            if(cheated){
+                quizViewModel.markQuestionAsCheated()
+            }
         }
     }
 //    private lateinit var trueButton: Button
@@ -165,11 +168,17 @@ class MainActivity : AppCompatActivity() {
 //            count++
 //        }
         val messageResId = when {
-            quizViewModel.isCheater -> R.string.judgement_toast
+            quizViewModel.isQuestionCheated() -> R.string.judgement_toast
             userAnswer == correctAnswer -> {
                 count++
-                R.string.correct_toast}
+                R.string.correct_toast
+            }
             else -> R.string.incorrect_toast
+//            quizViewModel.isCheater -> R.string.judgement_toast
+//            userAnswer == correctAnswer -> {
+//                count++
+//                R.string.correct_toast}
+//            else -> R.string.incorrect_toast
 
         }
 

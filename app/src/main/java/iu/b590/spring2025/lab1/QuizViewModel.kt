@@ -9,6 +9,7 @@ import java.util.Objects
 private const val TAG = "QuizViewModel"
 const val CURRENT_INDEX_KEY = "CURRENT_INDEX_KEY"
 const val IS_CHEATER_KEY = "IS_CHEATER_KEY"
+const val CHEATED_QUESTIONS_KEY = "CHEATED_QUESTIONS_KEY"
 
 class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(){
 //    init{
@@ -29,14 +30,19 @@ class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
         Question(R.string.question_asia, true)
     )
 
-    var isCheater: Boolean
-        get() = savedStateHandle.get(IS_CHEATER_KEY) ?: false
-        set(value) = savedStateHandle.set(IS_CHEATER_KEY, value)
+//    var isCheater: Boolean
+//        get() = savedStateHandle.get(IS_CHEATER_KEY) ?: false
+//        set(value) = savedStateHandle.set(IS_CHEATER_KEY, value)
 
 
     private var currentIndex
         get() = savedStateHandle.get(CURRENT_INDEX_KEY) ?: 0
         set(value) = savedStateHandle.set(CURRENT_INDEX_KEY, value)
+
+    private var cheatedQuestions: MutableSet<Int>
+        get() = savedStateHandle.get<MutableSet<Int>>(CHEATED_QUESTIONS_KEY) ?: mutableSetOf()
+        set(value) = savedStateHandle.set(CHEATED_QUESTIONS_KEY, value)
+
     val currentQuestionAnswer:Boolean
         get() = questionBank[currentIndex].answer
     val currentQuestionText: Int
@@ -57,4 +63,12 @@ class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
 
     val questionsize: Int
         get() = questionBank.size
+
+    fun markQuestionAsCheated() {
+        cheatedQuestions = cheatedQuestions.apply { add(currentIndex) }
+    }
+
+    fun isQuestionCheated(): Boolean {
+        return cheatedQuestions.contains(currentIndex)
+    }
 }

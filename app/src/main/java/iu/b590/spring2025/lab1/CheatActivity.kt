@@ -55,6 +55,9 @@ class CheatActivity : AppCompatActivity() {
             putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown)
         }
         setResult(Activity.RESULT_OK, data)
+//        if (isAnswerShown) {
+//            (applicationContext as? MainActivity)?.quizViewModel?.markQuestionAsCheated()
+//        }
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
