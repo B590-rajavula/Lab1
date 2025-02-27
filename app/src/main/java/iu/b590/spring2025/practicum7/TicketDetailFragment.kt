@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import iu.b590.spring2025.practicum7.databinding.FragmentTicketDetailBinding
 import kotlinx.coroutines.launch
@@ -65,11 +67,11 @@ class TicketDetailFragment: Fragment() {
                     oldTicket.copy(title = text.toString())
                 }
             }
-            ticketDate.apply{
-//                text = ticket.date.toString()
-//                ticket.date.toString()
-                isEnabled = false
-            }
+//            ticketDate.apply{
+////                text = ticket.date.toString()
+////                ticket.date.toString()
+//                isEnabled = false
+//            }
             ticketSolved.setOnCheckedChangeListener { _, isChecked ->
 //                ticket = ticket.copy(isSolved = isChecked)
 //                ticket.copy(isSolved = isChecked)
@@ -86,7 +88,16 @@ class TicketDetailFragment: Fragment() {
                }
            }
         }
+
+        setFragmentResultListener(
+            DatePickerFragment.REQUEST_KEY_DATE
+        ){_, bundle ->
+            val newDate =
+                bundle.getSerializable(DatePickerFragment.BUNDLE_KEY_DATE) as Date
+            ticketDetailViewModel.updateTicket { it.copy(date = newDate) }
+        }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -98,7 +109,12 @@ class TicketDetailFragment: Fragment() {
                 ticketTitle.setText(ticket.title)
             }
             ticketDate.text = ticket.date.toString()
+            ticketDate.setOnClickListener{
+                findNavController().navigate(TicketDetailFragmentDirections.selectDate(ticket.date))
+            }
             ticketSolved.isChecked = ticket.isSolved
         }
     }
 }
+
+
