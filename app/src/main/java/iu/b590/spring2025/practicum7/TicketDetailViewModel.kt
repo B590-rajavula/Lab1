@@ -3,9 +3,11 @@ package iu.b590.spring2025.practicum7
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.room.Update
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -24,6 +26,17 @@ class TicketDetailViewModel(ticketId: UUID) : ViewModel() {
                 println(e.message)
             }
         }
+    }
+
+    fun updateTicket(onUpdate: (Ticket) -> Ticket) {
+        _ticket.update { oldTicket ->
+            oldTicket?.let{onUpdate(it)}
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _ticket.value?.let { ticketRepository.updateTicket(it) }
     }
 }
 

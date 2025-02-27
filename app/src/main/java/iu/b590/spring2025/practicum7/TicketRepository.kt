@@ -3,12 +3,17 @@ package iu.b590.spring2025.practicum7
 import android.content.Context
 import androidx.room.Room
 import iu.b590.spring2025.practicum7.database.TicketDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 private const val DATABASE_NAME = "ticket-database.db"
 
-class TicketRepository private constructor(context: Context) {
+class TicketRepository private constructor(
+    context: Context,
+    private val coroutineScope: CoroutineScope = GlobalScope){
     private val database: TicketDatabase = Room.databaseBuilder(
         context.applicationContext,
         TicketDatabase::class.java,
@@ -19,6 +24,11 @@ class TicketRepository private constructor(context: Context) {
 
     fun getTickets(): Flow<List<Ticket>> = database.ticketDao().getTickets()
     fun getTicket(id: UUID): Flow<Ticket> = database.ticketDao().getTicket(id)
+    fun updateTicket(ticket: Ticket){
+        coroutineScope.launch {
+            database.ticketDao().updateTicket(ticket)
+        }
+    }
 
     companion object {
         private var INSTANCE: TicketRepository? = null

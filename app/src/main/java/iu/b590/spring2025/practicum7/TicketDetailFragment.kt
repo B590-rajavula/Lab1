@@ -61,6 +61,9 @@ class TicketDetailFragment: Fragment() {
             ticketTitle.doOnTextChanged { text, _, _, _ ->
 //                ticket = ticket.copy(title = text.toString())
 //                ticket.copy(title = text.toString())
+                ticketDetailViewModel.updateTicket { oldTicket ->
+                    oldTicket.copy(title = text.toString())
+                }
             }
             ticketDate.apply{
 //                text = ticket.date.toString()
@@ -70,6 +73,10 @@ class TicketDetailFragment: Fragment() {
             ticketSolved.setOnCheckedChangeListener { _, isChecked ->
 //                ticket = ticket.copy(isSolved = isChecked)
 //                ticket.copy(isSolved = isChecked)
+                ticketDetailViewModel.updateTicket { oldTicket ->
+                    oldTicket.copy(isSolved = isChecked)
+                }
+
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
