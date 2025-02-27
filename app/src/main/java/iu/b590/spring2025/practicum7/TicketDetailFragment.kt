@@ -96,6 +96,15 @@ class TicketDetailFragment: Fragment() {
                 bundle.getSerializable(DatePickerFragment.BUNDLE_KEY_DATE) as Date
             ticketDetailViewModel.updateTicket { it.copy(date = newDate) }
         }
+
+        setFragmentResultListener(
+            TimePickerFragment.REQUEST_KEY_TIME
+        ){_, bundle ->
+            val newDate =
+                bundle.getSerializable(TimePickerFragment.BUNDLE_KEY_TIME) as Date
+            ticketDetailViewModel.updateTicket { it.copy(date = newDate) }
+        }
+
     }
 
     override fun onDestroyView() {
@@ -111,6 +120,11 @@ class TicketDetailFragment: Fragment() {
             ticketDate.text = ticket.date.toString()
             ticketDate.setOnClickListener{
                 findNavController().navigate(TicketDetailFragmentDirections.selectDate(ticket.date))
+            }
+            ticketTime.text = "Pick the time"
+            ticketTime.setOnClickListener {
+                // Navigate to TimePickerFragment
+                findNavController().navigate(TicketDetailFragmentDirections.selectTime(ticket.date))
             }
             ticketSolved.isChecked = ticket.isSolved
         }
