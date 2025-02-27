@@ -15,12 +15,14 @@ class TicketRepository private constructor(context: Context) {
         context.applicationContext,
         TicketDatabase::class.java,
         DATABASE_NAME
-    ).createFromAsset(DATABASE_NAME).build()
+    ).createFromAsset(DATABASE_NAME)
+        .build()
 
 
 
-     fun  getTickets(): Flow<List<Ticket>> = database.ticketDao().getTickets()
-     fun getTicket(id: UUID): Ticket = database.ticketDao().getTicket(id)
+    fun  getTickets(): Flow<List<Ticket>> = database.ticketDao().getTickets()
+    fun getTicket(id: UUID): Ticket = database.ticketDao().getTicket(id)
+
 
     companion object {
         private var INSTANCE: TicketRepository? = null

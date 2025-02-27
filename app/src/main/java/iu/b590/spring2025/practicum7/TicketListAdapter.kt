@@ -5,57 +5,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
-import android.text.format.DateFormat
 import iu.b590.spring2025.practicum7.databinding.ListItemTicketBinding
-import iu.b590.spring2025.practicum7.databinding.ListItemManagerTicketBinding
 
-class TicketListAdapter(private val tickets: List<Ticket>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    override fun getItemViewType(position: Int): Int {
-        return if (tickets[position].requiresManager) {
-            1  // Manager ticket
-        } else {
-            0  // Normal ticket
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        return when (viewType) {
-            1 -> {
-                val binding = ListItemManagerTicketBinding.inflate(inflater, parent, false)
-                ManagerTicketHolder(binding)
-            }
-            else -> {
-                val binding = ListItemTicketBinding.inflate(inflater, parent, false)
-                TicketHolder(binding)
-            }
-        }
-    }
-
-    override fun getItemCount(): Int {
-        return tickets.size
-    }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val ticket = tickets[position]
-        when (holder) {
-            is TicketHolder -> holder.bind(ticket)
-            is ManagerTicketHolder -> holder.bind(ticket)
-        }
-    }
-}
 
 class TicketHolder(val binding: ListItemTicketBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(ticket: Ticket) {
         binding.ticketTitle.text = ticket.title
-        val formattedDate = DateFormat.format("EEEE, MMMM dd, yyyy", ticket.date)
-        binding.ticketDate.text = formattedDate
+        binding.ticketDate.text = ticket.date.toString()
+
         binding.root.setOnClickListener {
-            Toast.makeText(binding.root.context, "${ticket.title} clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(binding.root.context, "${ticket.title} clicked!", Toast.LENGTH_SHORT).show()
         }
-        binding.ticketSolved.visibility = if (ticket.isSolved){
+        binding.ticketSolved.visibility = if (ticket.isSolved) {
             View.VISIBLE
         } else {
             View.GONE
@@ -63,18 +24,22 @@ class TicketHolder(val binding: ListItemTicketBinding) : RecyclerView.ViewHolder
     }
 }
 
-class ManagerTicketHolder(val binding: ListItemManagerTicketBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(ticket: Ticket) {
-        binding.ticketTitle.text = ticket.title
-        val formattedDate = DateFormat.format("EEEE, MMMM dd, yyyy", ticket.date)
-        binding.ticketDate.text = formattedDate
+class TicketListAdapter(
+    private val tickets: List<Ticket>
+) : RecyclerView.Adapter<TicketHolder>() {
 
-        // Set up the "Contact Manager" button
-        binding.contactManagerButton.setOnClickListener {
-            // Handle "Contact Manager" button click
-            Toast.makeText(binding.root.context, "Contacting manager for ${ticket.title}", Toast.LENGTH_SHORT).show()
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TicketHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ListItemTicketBinding.inflate(inflater, parent, false)
+        return TicketHolder(binding)
+    }
+
+    override fun getItemCount(): Int {
+        return tickets.size
+    }
+
+    override fun onBindViewHolder(holder: TicketHolder, position: Int) {
+        val ticket = tickets[position]
+        holder.bind(ticket)
     }
 }
-
-

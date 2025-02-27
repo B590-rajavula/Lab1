@@ -53,6 +53,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
 
+
     debugImplementation ("androidx.fragment:fragment-testing:1.8.3")
 
     testImplementation(libs.junit)

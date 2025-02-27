@@ -10,6 +10,5 @@ data class Ticket(
     @PrimaryKey val id: UUID,
     val title: String,
     val date: Date,
-    val isSolved: Boolean,
-    val requiresManager: Boolean // Add this property
+    val isSolved: Boolean
 )

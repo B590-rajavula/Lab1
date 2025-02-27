@@ -10,22 +10,20 @@ import iu.b590.spring2025.practicum7.databinding.FragmentTicketDetailBinding
 import java.util.Date
 import java.util.UUID
 
-class TicketDetailFragment : Fragment() {
-    private var _binding: FragmentTicketDetailBinding? =null
-    private val binding
-        get() = checkNotNull(_binding) {
-            "Cannot access the View because it is null"
-        }
+class TicketDetailFragment: Fragment() {
     lateinit var ticket: Ticket
+    private var _binding: FragmentTicketDetailBinding? = null
+    private val binding get() = checkNotNull(_binding){
+        "Cannot access binding because it is null. Is the view visible?"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-       ticket = Ticket(
-           id = UUID.randomUUID(),
-           title = "",
-           date = Date(),
-           isSolved = false,
-           requiresManager = false
+        ticket = Ticket(
+            id= UUID.randomUUID(),
+            title="",
+            date= Date(),
+            isSolved=false
         )
     }
 
@@ -34,7 +32,7 @@ class TicketDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentTicketDetailBinding.inflate(inflater, container, false)
+        _binding= FragmentTicketDetailBinding.inflate(layoutInflater,container,false)
         return binding.root
     }
 
@@ -44,7 +42,7 @@ class TicketDetailFragment : Fragment() {
             ticketTitle.doOnTextChanged { text, _, _, _ ->
                 ticket = ticket.copy(title = text.toString())
             }
-            ticketDate.apply {
+            ticketDate.apply{
                 text = ticket.date.toString()
                 isEnabled = false
             }
@@ -53,7 +51,6 @@ class TicketDetailFragment : Fragment() {
             }
         }
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
