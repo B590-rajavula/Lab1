@@ -19,5 +19,10 @@
         android:text="Ticket Date"
         android:textSize="14sp"/>
 
-    <!-- No contact manager button here -->
+    <Button
+        android:id="@+id/contact_manager_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Contact Manager"
+        android:layout_gravity="end" />
 </LinearLayout>
