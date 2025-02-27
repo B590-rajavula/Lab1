@@ -15,8 +15,8 @@ class TicketTypeConverter {
     fun dateToTimestamp(date: Date?): Long? {
         return date?.time
     }
-//
-//    @TypeConverter
+
+    //    @TypeConverter
 //    fun fromUUID(uuid: String?): UUID? {
 //        return uuid?.let { UUID.fromString(it) }
 //    }
@@ -25,4 +25,13 @@ class TicketTypeConverter {
 //    fun uuidToString(uuid: UUID?): String? {
 //        return uuid?.toString()
 //    }
+    @TypeConverter
+    fun fromUUID(id: UUID?): String {
+        return id.toString()
+    }
+
+    @TypeConverter
+    fun toUUID(idString: String): UUID {
+        return UUID.fromString((idString))
+    }
 }

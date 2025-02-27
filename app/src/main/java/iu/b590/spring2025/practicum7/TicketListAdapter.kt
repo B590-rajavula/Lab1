@@ -6,15 +6,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import iu.b590.spring2025.practicum7.databinding.ListItemTicketBinding
+import java.util.UUID
 
 
 class TicketHolder(val binding: ListItemTicketBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(ticket: Ticket) {
+    fun bind(ticket: Ticket, onTicketClicked: (ticketId: UUID) -> Unit) {
         binding.ticketTitle.text = ticket.title
         binding.ticketDate.text = ticket.date.toString()
 
         binding.root.setOnClickListener {
-            Toast.makeText(binding.root.context, "${ticket.title} clicked!", Toast.LENGTH_SHORT).show()
+            onTicketClicked(ticket.id)
         }
         binding.ticketSolved.visibility = if (ticket.isSolved) {
             View.VISIBLE
@@ -25,7 +26,8 @@ class TicketHolder(val binding: ListItemTicketBinding) : RecyclerView.ViewHolder
 }
 
 class TicketListAdapter(
-    private val tickets: List<Ticket>
+    private val tickets: List<Ticket>,
+    private val onTicketClicked: (ticketId: UUID) -> Unit
 ) : RecyclerView.Adapter<TicketHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TicketHolder {
@@ -40,6 +42,6 @@ class TicketListAdapter(
 
     override fun onBindViewHolder(holder: TicketHolder, position: Int) {
         val ticket = tickets[position]
-        holder.bind(ticket)
+        holder.bind(ticket, onTicketClicked)
     }
 }

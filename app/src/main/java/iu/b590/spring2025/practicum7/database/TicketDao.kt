@@ -9,8 +9,8 @@ import java.util.UUID
 @Dao
 interface TicketDao {
     @Query("SELECT * FROM ticket")
-    fun getTickets(): Flow<List<Ticket>>
+      fun getTickets(): Flow<List<Ticket>>
 
     @Query("SELECT * FROM ticket WHERE id=:id")
-    fun getTicket(id: UUID): Ticket
+      fun getTicket(id: UUID): Flow<Ticket>
 }
