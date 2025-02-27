@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import android.text.format.DateFormat
 import iu.b590.spring2025.practicum7.databinding.ListItemTicketBinding
 import iu.b590.spring2025.practicum7.databinding.ListItemManagerTicketBinding
 
@@ -49,7 +50,8 @@ class TicketListAdapter(private val tickets: List<Ticket>) : RecyclerView.Adapte
 class TicketHolder(val binding: ListItemTicketBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(ticket: Ticket) {
         binding.ticketTitle.text = ticket.title
-        binding.ticketDate.text = ticket.date.toString()
+        val formattedDate = DateFormat.format("EEEE, MMMM dd, yyyy", ticket.date)
+        binding.ticketDate.text = formattedDate
         binding.root.setOnClickListener {
             Toast.makeText(binding.root.context, "${ticket.title} clicked", Toast.LENGTH_SHORT).show()
         }
@@ -64,7 +66,8 @@ class TicketHolder(val binding: ListItemTicketBinding) : RecyclerView.ViewHolder
 class ManagerTicketHolder(val binding: ListItemManagerTicketBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(ticket: Ticket) {
         binding.ticketTitle.text = ticket.title
-        binding.ticketDate.text = ticket.date.toString()
+        val formattedDate = DateFormat.format("EEEE, MMMM dd, yyyy", ticket.date)
+        binding.ticketDate.text = formattedDate
 
         // Set up the "Contact Manager" button
         binding.contactManagerButton.setOnClickListener {
