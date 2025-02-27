@@ -1,6 +1,7 @@
 package iu.b590.spring2025.practicum7
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
@@ -51,6 +52,11 @@ class TicketHolder(val binding: ListItemTicketBinding) : RecyclerView.ViewHolder
         binding.ticketDate.text = ticket.date.toString()
         binding.root.setOnClickListener {
             Toast.makeText(binding.root.context, "${ticket.title} clicked", Toast.LENGTH_SHORT).show()
+        }
+        binding.ticketSolved.visibility = if (ticket.isSolved){
+            View.VISIBLE
+        } else {
+            View.GONE
         }
     }
 }
