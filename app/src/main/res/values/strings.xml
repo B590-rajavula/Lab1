@@ -18,5 +18,4 @@ The ticket was submitted on %2$s. %3$s, and %4$s
     <string name="ticket_report_assignee">the assignee is %s.</string>
     <string name="ticket_report_subject">ticket Report</string>
     <string name="send_report">Send ticket report via</string>
-    <string name="Call_Assignee">Call Assignee</string>
 </resources>

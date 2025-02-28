@@ -108,27 +108,6 @@ class TicketDetailFragment: Fragment() {
             )
             ticketAssignee.isEnabled = canResolveIntent(selectAssigneeIntent)
         }
-        binding.callAssignee.setOnClickListener {
-            val assigneeUri = ticketDetailViewModel.ticket.value?.assigneeUri
-            assigneeUri?.let {
-                val phoneNumber = getPhoneNumber(Uri.parse(it))
-                if (phoneNumber != null) {
-                    val callIntent = Intent(Intent.ACTION_DIAL).apply {
-                        data = Uri.parse("tel:$phoneNumber")
-                    }
-                    startActivity(callIntent)
-                } else {
-                    Log.d(TAG, "No phone number found for contact.")
-                }
-            }
-        }
-
-
-        if (requireContext().checkSelfPermission(android.Manifest.permission.READ_CONTACTS)
-            != PackageManager.PERMISSION_GRANTED) {
-            requestContactPermission.launch(android.Manifest.permission.READ_CONTACTS)
-        }
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 ticketDetailViewModel.ticket.collect { ticket ->
@@ -247,61 +226,4 @@ class TicketDetailFragment: Fragment() {
             )
         return resolvedActivity != null
     }
-
-    private val requestContactPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            Log.d(TAG, "Contact permission granted.")
-        } else {
-            Log.d(TAG, "Contact permission denied.")
-        }
-    }
-
-    private fun getPhoneNumber(contactUri: Uri): String? {
-        val contactId: String?
-        val cursor = requireActivity().contentResolver.query(
-            contactUri,
-            arrayOf(ContactsContract.Contacts._ID),
-            null, null, null
-        )
-
-        contactId = cursor?.use {
-            if (it.moveToFirst()) it.getString(0) else null
-        }
-
-        contactId?.let {
-            val phoneCursor = requireActivity().contentResolver.query(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER),
-                "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
-                arrayOf(it),
-                null
-            )
-
-            phoneCursor?.use {
-                if (it.moveToFirst()) {
-                    return it.getString(0)
-                }
-            }
-        }
-        return null
-    }
-
-
-    private fun handleContactSelection(contactUri: Uri) {
-        val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
-        val queryCursor = requireActivity().contentResolver
-            .query(contactUri, queryFields, null, null, null)
-
-        queryCursor?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                val assignee = cursor.getString(0)
-                ticketDetailViewModel.updateTicket { oldTicket ->
-                    oldTicket.copy(assignee = assignee, assigneeUri = contactUri.toString())
-                }
-            }
-        }
-    }
-
 }

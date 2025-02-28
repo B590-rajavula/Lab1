@@ -67,11 +67,6 @@
         android:layout_height="wrap_content"
         android:text ="@string/ticket_report_text"
         />
-    <Button
-        android:id="@+id/callAssignee"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Call_Assignee" />
 
 
 </LinearLayout>
