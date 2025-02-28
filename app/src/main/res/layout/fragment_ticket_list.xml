@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/root">
+    android:layout_height="match_parent">
 
+    <!-- Toolbar for the fragment -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
@@ -16,6 +15,8 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp" />
+
+    <!-- RecyclerView for the tickets -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ticket_recycler_view"
         android:layout_height="0dp"
@@ -24,4 +25,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Placeholder view for when no tickets are present -->
+    <TextView
+        android:id="@+id/no_tickets_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="There are no tickets"
+        android:textSize="18sp"
+        android:layout_marginTop="32dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Button to create a new ticket -->
+    <Button
+        android:id="@+id/create_ticket_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Ticket"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/no_tickets_message"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,17 +8,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class TicketListViewModel : ViewModel() {
-
     private val ticketRepository = TicketRepository.get()
-
-    private val _tickets: MutableStateFlow<List<Ticket>> = MutableStateFlow(emptyList())
-    val tickets: StateFlow<List<Ticket>>
-        get() = _tickets.asStateFlow()
+    private val _tickets = MutableStateFlow<List<Ticket>>(emptyList())
+    val tickets: StateFlow<List<Ticket>> = _tickets.asStateFlow()
 
     init {
         viewModelScope.launch {
-            ticketRepository.getTickets().collect {
-                _tickets.value = it
+            ticketRepository.getTickets().collect { ticketList ->
+                _tickets.value = ticketList
             }
         }
     }

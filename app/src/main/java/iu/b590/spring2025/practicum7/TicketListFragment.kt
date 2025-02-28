@@ -19,20 +19,11 @@ private const val TAG = "TicketListFragment"
 class TicketListFragment : Fragment() {
 
     private var _binding: FragmentTicketListBinding? = null
-    private val binding
-        get() = checkNotNull(_binding) {
-            "Cannot access binding because it is null."
-        }
-
+    private val binding get() = checkNotNull(_binding) { "Cannot access binding because it is null." }
     private val ticketListViewModel: TicketListViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentTicketListBinding.inflate(inflater, container, false)
         binding.ticketRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -41,26 +32,42 @@ class TicketListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.toolbar.inflateMenu(R.menu.fragment_ticket_list)
+
+        // Observe tickets and toggle visibility based on the list size
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 ticketListViewModel.tickets.collect { tickets ->
-                    binding.ticketRecyclerView.adapter = TicketListAdapter(tickets) {
-                        ticketId ->
+                    if (tickets.isEmpty()) {
+                        binding.noTicketsMessage.visibility = View.VISIBLE
+                        binding.createTicketButton.visibility = View.VISIBLE
+                    } else {
+                        binding.noTicketsMessage.visibility = View.GONE
+                        binding.createTicketButton.visibility = View.GONE
+                    }
+
+                    binding.ticketRecyclerView.adapter = TicketListAdapter(tickets) { ticketId ->
                         findNavController().navigate(TicketListFragmentDirections.showTicketDetail(ticketId))
                     }
                 }
             }
         }
 
-        binding.toolbar.setOnMenuItemClickListener{
-            when(it.itemId) {
+        // Handle menu item click (Create Ticket)
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
                 R.id.new_ticket -> {
                     findNavController().navigate(TicketListFragmentDirections.showTicketDetail(null))
                     true
                 }
                 else -> false
             }
+        }
+
+        // Button click listener to create a ticket when no tickets exist
+        binding.createTicketButton.setOnClickListener {
+            findNavController().navigate(TicketListFragmentDirections.showTicketDetail(null))
         }
     }
 
