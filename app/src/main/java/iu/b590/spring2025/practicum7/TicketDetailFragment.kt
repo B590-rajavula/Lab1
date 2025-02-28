@@ -12,6 +12,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
+import androidx.core.view.doOnLayout
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -23,12 +25,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import iu.b590.spring2025.practicum7.databinding.FragmentTicketDetailBinding
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Date
 import java.util.UUID
 
 private const val TAG = "TicketDetailFragment"
 private const val DATE_FORMAT = "EEE, MMM, dd"
 class TicketDetailFragment: Fragment() {
+    private var photoName: String?=null
     private val args: TicketDetailFragmentArgs by navArgs()
     private val ticketDetailViewModel: TicketDetailViewModel by viewModels {
         TicketDetailViewModelFactory(args.ticketId)
@@ -44,6 +48,19 @@ class TicketDetailFragment: Fragment() {
     ) { uri: Uri? ->
         //Read
         uri?.let { parseContactSelection(it) }
+    }
+
+    private val takePhoto = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { didTakePhoto: Boolean ->
+        if (didTakePhoto && photoName != null) {
+            // Update the ticket with the new photo file name
+            ticketDetailViewModel.updateTicket { oldTicket ->
+                oldTicket.copy(photoFileName = photoName)
+            }
+            // Update the ImageView with the new photo
+            updatePhoto(photoName)
+        }
     }
 
 //    private lateinit var ticket: Ticket
@@ -107,6 +124,21 @@ class TicketDetailFragment: Fragment() {
                 null
             )
             ticketAssignee.isEnabled = canResolveIntent(selectAssigneeIntent)
+            ticketCamera.setOnClickListener {
+                photoName = "IMG_${Date()}.JPG" // Set the photo name
+                val photoFile = File(requireContext().applicationContext.filesDir, photoName)
+                val photoUri = FileProvider.getUriForFile(
+                    requireContext(),
+                    "iu.b590.spring2025.practicum7.fileprovider",
+                    photoFile
+                )
+                takePhoto.launch(photoUri)
+            }
+            val captureImageIntent = takePhoto.contract.createIntent(
+                requireContext(),
+                Uri.parse( "")
+            )
+            ticketCamera.isEnabled = canResolveIntent(captureImageIntent)
         }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -173,6 +205,7 @@ class TicketDetailFragment: Fragment() {
             ticketAssignee.text = ticket.assignee.ifEmpty {
                 getString(R.string.ticket_assignee_text)
             }
+            updatePhoto(ticket.photoFileName)
         }
     }
 
@@ -225,5 +258,28 @@ class TicketDetailFragment: Fragment() {
                 PackageManager.MATCH_DEFAULT_ONLY
             )
         return resolvedActivity != null
+    }
+
+    private fun updatePhoto(photoFileName: String?) {
+        if (binding.ticketPhoto.tag != photoFileName) {
+            val photoFile = photoFileName?.let {
+                File(requireContext().applicationContext.filesDir, it)
+            }
+
+            if (photoFile?.exists() == true) {
+                binding.ticketPhoto.doOnLayout { measuredView ->
+                    val scaledBitmap = getScaledBitmap(
+                        photoFile.path,
+                        measuredView.width,
+                        measuredView.height
+                    )
+                    binding.ticketPhoto.setImageBitmap(scaledBitmap)
+                    binding.ticketPhoto.tag = photoFileName
+                }
+            } else {
+                binding.ticketPhoto.setImageBitmap(null)
+                binding.ticketPhoto.tag = null
+            }
+        }
     }
 }
