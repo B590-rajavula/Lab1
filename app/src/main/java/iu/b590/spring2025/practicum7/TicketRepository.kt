@@ -3,6 +3,7 @@ package iu.b590.spring2025.practicum7
 import android.content.Context
 import androidx.room.Room
 import iu.b590.spring2025.practicum7.database.TicketDatabase
+import iu.b590.spring2025.practicum7.database.migration_1_2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +19,8 @@ class TicketRepository private constructor(
         context.applicationContext,
         TicketDatabase::class.java,
         DATABASE_NAME
-    ).build()
+    ).addMigrations(migration_1_2)
+        .build()
 
     fun getTickets(): Flow<List<Ticket>> = database.ticketDao().getTickets()
     fun getTicket(id: UUID): Flow<Ticket> = database.ticketDao().getTicket(id)

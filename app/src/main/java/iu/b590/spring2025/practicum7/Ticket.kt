@@ -10,5 +10,7 @@ data class Ticket(
     @PrimaryKey val id: UUID,
     val title: String,
     val date: Date,
-    val isSolved: Boolean
+    val isSolved: Boolean,
+    val assignee: String = "",
+    val assigneeUri: String = ""
 )

@@ -35,6 +35,7 @@ class TicketListFragment : Fragment() {
 
         binding.toolbar.inflateMenu(R.menu.fragment_ticket_list)
 
+
         // Observe tickets and toggle visibility based on the list size
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
