@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Lab7</string>
+    <string name="ticket_title_hint">Enter a title for the ticket</string>
+    <string name="ticket_title_label">Title</string>
+    <string name="ticket_details_label">Details</string>
+    <string name="ticket_solved_label">Solved</string>
+    <string name="new_ticket">New Ticket</string>
+</resources>
