@@ -41,7 +41,7 @@ class TicketListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.toolbar.inflateMenu(R.menu.fragment_ticket_list)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 ticketListViewModel.tickets.collect { tickets ->
@@ -50,6 +50,16 @@ class TicketListFragment : Fragment() {
                         findNavController().navigate(TicketListFragmentDirections.showTicketDetail(ticketId))
                     }
                 }
+            }
+        }
+
+        binding.toolbar.setOnMenuItemClickListener{
+            when(it.itemId) {
+                R.id.new_ticket -> {
+                    findNavController().navigate(TicketListFragmentDirections.showTicketDetail(null))
+                    true
+                }
+                else -> false
             }
         }
     }

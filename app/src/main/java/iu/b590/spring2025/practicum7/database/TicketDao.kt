@@ -1,6 +1,7 @@
 package iu.b590.spring2025.practicum7.database
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import iu.b590.spring2025.practicum7.Ticket
@@ -17,4 +18,7 @@ interface TicketDao {
 
       @Update
       fun updateTicket(ticket: Ticket)
+
+      @Insert
+      fun addTicket(ticket: Ticket)
 }

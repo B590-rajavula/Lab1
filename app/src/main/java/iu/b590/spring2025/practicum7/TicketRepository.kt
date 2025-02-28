@@ -18,15 +18,19 @@ class TicketRepository private constructor(
         context.applicationContext,
         TicketDatabase::class.java,
         DATABASE_NAME
-    )
-        .createFromAsset(DATABASE_NAME)
-        .build()
+    ).build()
 
     fun getTickets(): Flow<List<Ticket>> = database.ticketDao().getTickets()
     fun getTicket(id: UUID): Flow<Ticket> = database.ticketDao().getTicket(id)
     fun updateTicket(ticket: Ticket){
         coroutineScope.launch {
             database.ticketDao().updateTicket(ticket)
+        }
+    }
+
+    fun addTicket(ticket: Ticket) {
+        coroutineScope.launch {
+            database.ticketDao().addTicket(ticket)
         }
     }
 
