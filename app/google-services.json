@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "539051240687",
+    "project_id": "practicum20-56a7a",
+    "storage_bucket": "practicum20-56a7a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:539051240687:android:ef35b476d546d8c332ff1a",
+        "android_client_info": {
+          "package_name": "iu.b590.spring2025.practicum20"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATL3MtYxLhniFup3Wwpw734xSqlQKlCY8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
