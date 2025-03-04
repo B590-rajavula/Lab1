@@ -27,6 +27,7 @@ class PostsFragment : Fragment() {
         binding.btnLogout.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
             findNavController().navigate(R.id.navigateToLogin)
+//            To Navigate to login Page
         }
 
         return binding.root
