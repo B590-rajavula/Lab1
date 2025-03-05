@@ -2,6 +2,7 @@ package iu.b590.spring2025.practicum20
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -17,6 +19,7 @@ import iu.b590.spring2025.practicum20.model.User
 import iu.b590.spring2025.practicum20.model.Post
 import iu.b590.spring2025.practicum20.databinding.FragmentCreateBinding
 import iu.b590.spring2025.practicum20.databinding.FragmentPostsBinding
+import kotlinx.coroutines.runBlocking
 
 
 private const val TAG = "CreateFragment"
@@ -86,11 +89,25 @@ class CreateFragment: Fragment() {
                 Log.i(TAG, "Failure fetching signed in user", exception)
             }
     }
+
+    fun convertUriToBase64(uri: Uri?): String {
+
+        val inputStream = context?.contentResolver?.openInputStream(uri!!)
+        val bytes = inputStream?.readBytes()
+        return Base64.encodeToString(bytes, Base64.DEFAULT)
+    }
+    private val createPostViewModel: CreatePostViewModel by viewModels()
     private fun saveThePost(){
+        val imageAsString = convertUriToBase64 (photoUri)
+        val fileName = "${System.currentTimeMillis()}-photo.jpg"
+        val job =runBlocking {
+            createPostViewModel.uploadImageToGitHub (imageAsString, fileName)
+        }
+        val imageUrl = PhotoRepository.get().getImageUrl(fileName)
         val post = Post(
 
         binding.etDescription.text.toString(),
-       "",
+            imageUrl,
         System.currentTimeMillis(),
         signedInUser
         )
