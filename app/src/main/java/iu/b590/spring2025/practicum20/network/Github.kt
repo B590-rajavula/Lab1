@@ -1,5 +1,6 @@
 package iu.b590.spring2025.practicum20.network
 
+import android.util.Xml.Encoding
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -17,6 +18,14 @@ interface GitHubApi {
         @Path("path") path: String,
         @Body body: GitHubFile
     ): Response<GitHubResponse>
+    @GET("repos/{owner}/{repo}/contents/{path}")
+    suspend fun getFileContent(
+        @Header("Authorization") token: String,
+        @Path("owner") owner: String,
+        @Path("repo") repo: String,
+        @Path("path") path: String
+    ): Response<GitHubFileResponse>
+
 }
 data class GitHubFile(
     val message: String,
@@ -26,6 +35,12 @@ data class GitHubFile(
 data class GitHubResponse(
 
     val content: Content
+)
+
+data class GitHubFileResponse(
+    val content: String,
+    val encoding: String,
+    val download_url: String
 )
 data class Content (
 val path: String,
