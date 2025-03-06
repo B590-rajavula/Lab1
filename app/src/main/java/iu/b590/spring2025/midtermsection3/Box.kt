@@ -1,9 +1,10 @@
 package iu.b590.spring2025.midtermsection3
 
 import android.graphics.PointF
+import android.os.Parcel
+import android.os.Parcelable
 
-
-data class Box (val start: PointF) {
+data class Box(val start: PointF) : Parcelable {
     var end: PointF = start
     val left: Float
         get() = Math.min(start.x, end.x)
@@ -13,4 +14,26 @@ data class Box (val start: PointF) {
         get() = Math.min(start.y, end.y)
     val bottom: Float
         get() = Math.max(start.y, end.y)
+
+    // Parcelable implementation
+    constructor(parcel: Parcel) : this(parcel.readParcelable(PointF::class.java.classLoader)!!) {
+        end = parcel.readParcelable(PointF::class.java.classLoader)!!
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeParcelable(start, flags)
+        parcel.writeParcelable(end, flags)
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<Box> {
+        override fun createFromParcel(parcel: Parcel): Box {
+            return Box(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Box?> {
+            return arrayOfNulls(size)
+        }
+    }
 }

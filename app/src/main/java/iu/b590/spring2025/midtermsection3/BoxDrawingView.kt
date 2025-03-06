@@ -2,73 +2,91 @@ package iu.b590.spring2025.midtermsection3
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.util.Log
 
 private const val TAG = "BoxDrawingView"
 
 class BoxDrawingView(
     context: Context,
     attrs: AttributeSet? = null
-): View(context, attrs) {
+) : View(context, attrs) {
 
     private var currentBox: Box? = null
     private val boxes = mutableListOf<Box>()
     private val boxPaint = Paint().apply {
-        color = 0x22ff0000.toInt()
+        color = 0x22ff0000.toInt() // Semi-transparent red color
     }
     private val backgroundPaint = Paint().apply {
-        color = 0xfff8efe0.toInt()
+        color = 0xfff8efe0.toInt() // Light background color
     }
+
+    // Save the boxes' state when the view is going to be destroyed or orientation changes
+    override fun onSaveInstanceState(): Parcelable? {
+        val superState = super.onSaveInstanceState() // Save the super state first
+        val bundle = Bundle().apply {
+            putParcelableArrayList("boxes", ArrayList(boxes)) // Save the list of boxes
+        }
+        bundle.putParcelable("superState", superState) // Store the super state for restoration
+        Log.d(TAG, "onSaveInstanceState: Boxes saved: ${boxes.size}")
+        return bundle
+    }
+
+    // Restore the boxes' state when the view is recreated after orientation changes
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if (state is Bundle) {
+            val superState = state.getParcelable<Parcelable>("superState")
+            super.onRestoreInstanceState(superState) // Restore the super state
+            val restoredBoxes = state.getParcelableArrayList<Box>("boxes")
+            restoredBoxes?.let {
+                boxes.clear() // Clear current boxes and add restored ones
+                boxes.addAll(it)
+            }
+            Log.d(TAG, "onRestoreInstanceState: Boxes restored: ${boxes.size}")
+        } else {
+            super.onRestoreInstanceState(state)
+        }
+    }
+
+    // Handle touch events like ACTION_DOWN, ACTION_MOVE, and ACTION_UP
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val current = PointF(event.x, event.y)
-        var action = ""
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                action = "ACTION_DOWN"
                 currentBox = Box(current).also {
-                    boxes.add((it))
+                    boxes.add(it) // Start a new box
                 }
             }
 
             MotionEvent.ACTION_MOVE -> {
-                action = "ACTION_MOVE"
-                updateCurrentBox(current)
-
+                currentBox?.let {
+                    it.end = current // Update the current box's endpoint
+                    invalidate() // Redraw the view
+                }
             }
 
             MotionEvent.ACTION_UP -> {
-                action = "ACTION_UP"
-                updateCurrentBox(current)
-                currentBox = null
+                currentBox = null // Finish the current box
             }
 
             MotionEvent.ACTION_CANCEL -> {
-                action = "ACTION_CANCEL"
-                currentBox = null
+                currentBox = null // Cancel the current box
             }
         }
-        Log.i(TAG, "$action at x=${current.x}, y=${current.y}")
         return true
     }
 
-    private fun updateCurrentBox(current: PointF) {
-        currentBox?.let {
-            it.end = current
-            invalidate()
-        }
-    }
-
+    // Draw the background and boxes
     override fun onDraw(canvas: Canvas) {
-// Fill the background
-        canvas.drawPaint (backgroundPaint)
+        canvas.drawPaint(backgroundPaint) // Fill the background
         boxes.forEach { box ->
-            canvas.drawRect(box.left, box.top, box.right, box.bottom, boxPaint)
+            canvas.drawRect(box.left, box.top, box.right, box.bottom, boxPaint) // Draw each box
         }
     }
 }
