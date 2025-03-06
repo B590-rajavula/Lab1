@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import iu.b590.spring2025.midtermsection5.model.Topping
 import iu.b590.spring2025.midtermsection5.model.ToppingPlacement
+import iu.b590.spring2025.midtermsection5.ui.AppTheme
 import iu.b590.spring2025.midtermsection5.ui.PizzaBuilderScreen
 import iu.b590.spring2025.midtermsection5.ui.ToppingCell
 
@@ -30,7 +31,9 @@ class MainActivity : ComponentActivity() {
 //                placement = ToppingPlacement.Left,
 //                onClickTopping = {}
 //            )
-            PizzaBuilderScreen()
+            AppTheme {
+                PizzaBuilderScreen()
+            }
         }
     }
 }
