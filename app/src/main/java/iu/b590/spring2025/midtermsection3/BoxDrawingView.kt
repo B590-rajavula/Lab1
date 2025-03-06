@@ -39,6 +39,7 @@ class BoxDrawingView(
             MotionEvent.ACTION_MOVE -> {
                 action = "ACTION_MOVE"
                 updateCurrentBox(current)
+                //action move
             }
 
             MotionEvent.ACTION_UP -> {
