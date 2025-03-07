@@ -42,7 +42,7 @@ class NotesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        notesAdapter = NotesAdapter(mutableListOf()) // Initialize with an empty list
+        notesAdapter = NotesAdapter(mutableListOf(), findNavController()) // Initialize with an empty list
         binding.rvPosts.adapter = notesAdapter  // Set adapter once
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -56,6 +56,9 @@ class NotesFragment : Fragment() {
         val auth = FirebaseAuth.getInstance()
         if (auth.currentUser == null) {
             goToLoginScreen()
+        }
+        binding.rvPosts.setOnClickListener{
+            this.findNavController().navigate(R.id.navigate_to_EditFragment)
         }
         binding.fabCreate.setOnClickListener {
             this.findNavController().navigate(R.id.navigate_to_createFragment)

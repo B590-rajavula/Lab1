@@ -28,7 +28,10 @@
             android:id="@+id/navigate_to_createFragment"
             app:destination="@id/createFragment" />
 
-        
+        <action
+            android:id="@+id/navigate_to_EditFragment"
+            app:destination="@id/EditFragment" />
+
 
 
     </fragment>
@@ -40,6 +43,16 @@
         tools:layout="@layout/fragment_create" >
         <action
             android:id="@+id/navigate_To_NotesFragment"
+            app:destination="@id/notesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/EditFragment"
+        android:name="iu.b590.spring2025.midtermsection6.EditFragment"
+        android:label="fragment_edit"
+        tools:layout="@layout/fragment_edit" >
+        <action
+            android:id="@+id/navigateToNotesFragment"
             app:destination="@id/notesFragment" />
     </fragment>
 
