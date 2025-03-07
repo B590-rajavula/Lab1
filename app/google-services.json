@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "47228827762",
+    "project_id": "midtermsection6-50403",
+    "storage_bucket": "midtermsection6-50403.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:47228827762:android:9425b3899281f6147b2aeb",
+        "android_client_info": {
+          "package_name": "iu.b590.spring2025.midtermsection6"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQo_-1UfTseHenyp8OmMC_XUH94PiXL2s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
