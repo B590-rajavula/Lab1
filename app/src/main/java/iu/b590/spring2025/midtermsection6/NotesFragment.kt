@@ -1,6 +1,9 @@
 package iu.b590.spring2025.midtermsection6
 
+
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,81 +13,129 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import iu.b590.spring2025.midtermsection6.R
 import iu.b590.spring2025.midtermsection6.databinding.FragmentNotesBinding
-import iu.b590.spring2025.midtermsection6.model.NoteViewModel
+
+import iu.b590.spring2025.midtermsection6.model.Note
 import kotlinx.coroutines.launch
 
-
-private const val TAG = "NotesFragment"
+private const val TAG="NotesFragment"
 
 class NotesFragment : Fragment() {
-
     private var _binding: FragmentNotesBinding? = null
     private val binding
         get() = checkNotNull(_binding) {
             "Cannot access binding because it is null."
         }
 
-    private  val noteViewModel: NoteViewModel by viewModels()
-    private lateinit var notesAdapter: NotesAdapter
+    private val noteViewModel: NoteViewModel by viewModels()
+    private lateinit var noteAdapter: NoteAdapter // Declare NoteAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-// Inflate the layout for this fragment
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
+
+        binding.btnLogout.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            findNavController().navigate(R.id.navigateToLogin)
+//            To Navigate to login Page
+        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        notesAdapter = NotesAdapter(mutableListOf(), findNavController()) // Initialize with an empty list
-        binding.rvPosts.adapter = notesAdapter  // Set adapter once
+        // Initialize RecyclerView and Adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        noteAdapter = NoteAdapter(
+            emptyList(), // Initialize with an empty list
+            onNoteClicked = { note ->
+                // Handle note click (navigate to NoteFragment)
+                onNoteClicked(note)
+            },
+            onDeleteClicked = { note ->
+                // Handle delete click (show confirmation dialog)
+                onDeleteClicked(note)
+            }
+        )
+        binding.recyclerView.adapter = noteAdapter
+
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 noteViewModel.notes.collect { notes ->
-                    notesAdapter.updateNotes(notes) // Update instead of replacing
+                    noteAdapter = NoteAdapter(
+                        notes, // Initialize with the notes list
+                        onNoteClicked = { note ->
+                            // Handle note click (navigate to NoteFragment)
+                            onNoteClicked(note)
+                        },
+                        onDeleteClicked = { note ->
+                            // Handle delete click (show confirmation dialog)
+                            onDeleteClicked(note)
+                        }
+                    )
+                    binding.recyclerView.adapter = noteAdapter
                 }
             }
         }
-        // Check if user is logged in, else go to login screen
+
         val auth = FirebaseAuth.getInstance()
         if (auth.currentUser == null) {
             goToLoginScreen()
         }
-        binding.rvPosts.setOnClickListener{
-            this.findNavController().navigate(R.id.navigate_to_EditFragment)
-        }
-        binding.fabCreate.setOnClickListener {
-            this.findNavController().navigate(R.id.navigate_to_createFragment)
+
+        binding.addNoteButton.setOnClickListener {
+            this.findNavController().navigate(R.id.navigateToNote)
         }
     }
 
-//    // Inflates the menu to add the logout option
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.menu_posts, menu) // Inflate your menu
-//        super.onCreateOptionsMenu(menu, inflater)
-//    }
-
-
-    // Handle the logout action from the toolbar
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            R.id.menu_logout -> {
-//                FirebaseAuth.getInstance().signOut()
-//                goToLoginScreen()
-//                return true
-//            }
-//            else -> return super.onOptionsItemSelected(item)
-//        }
-//    }
-
     private fun goToLoginScreen() {
         this.findNavController().navigate(R.id.navigateToLogin)
+    }
+
+
+    private fun onNoteClicked(note: Note) {
+        // Navigate to NoteFragment, passing the note data
+        val action = NotesFragmentDirections.navigateToNote(
+            note.title,
+            note.description,
+            note.documentId
+        )
+        findNavController().navigate(action)
+    }
+
+    private fun onDeleteClicked(note: Note) {
+        // Show confirmation dialog fragment
+        val dialog = DeleteConfirmationDialogFragment {
+            deleteNote(note)  // Call deleteNote if confirmed
+        }
+        dialog.show(childFragmentManager, "DeleteConfirmationDialog")
+    }
+
+    private fun deleteNote(note: Note) {
+        val firestoreDb = FirebaseFirestore.getInstance()
+        firestoreDb.collection("notes").document(note.documentId!!).delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "Deleted note successfully")
+
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Exception occured:$e")
+            }
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
