@@ -21,7 +21,7 @@ import java.net.URL
 private const val TAG = "PostHolder"
 
 class PostHolder (private val binding: PostItemBinding)
-: RecyclerView.ViewHolder (binding.root) {
+    : RecyclerView.ViewHolder (binding.root) {
     fun bind(post: Post) {
         val username = post.user?.username ?: "Unknown User"
         binding.tvUsername.text = username
@@ -95,19 +95,19 @@ class PostHolder (private val binding: PostItemBinding)
 
 class PostsAdapter(
     private val posts: List<Post>,
-    ): RecyclerView.Adapter<PostHolder>() {
-        override fun onCreateViewHolder (parent: ViewGroup, viewType: Int): PostHolder {
-            val infaltor = LayoutInflater.from(parent.context)
-            val binding = PostItemBinding.inflate(infaltor, parent, false)
-            return PostHolder(binding)
-        }
-override fun getItemCount(): Int {
-    return posts.size
-}
+): RecyclerView.Adapter<PostHolder>() {
+    override fun onCreateViewHolder (parent: ViewGroup, viewType: Int): PostHolder {
+        val infaltor = LayoutInflater.from(parent.context)
+        val binding = PostItemBinding.inflate(infaltor, parent, false)
+        return PostHolder(binding)
+    }
+    override fun getItemCount(): Int {
+        return posts.size
+    }
 
 
-override fun onBindViewHolder (holder: PostHolder, position: Int) {
-    val post = posts[position]
-    holder.bind(post)
-}
+    override fun onBindViewHolder (holder: PostHolder, position: Int) {
+        val post = posts[position]
+        holder.bind(post)
+    }
 }

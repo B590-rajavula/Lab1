@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import iu.b590.spring2025.practicum20.model.User
 import iu.b590.spring2025.practicum20.model.Post
 import iu.b590.spring2025.practicum20.databinding.FragmentCreateBinding
@@ -61,6 +62,20 @@ class CreateFragment: Fragment() {
                     Log.d(TAG, "Selected URI: $uri")
                     photoUri = uri
                     binding.imageView.setImageURI(uri)
+
+                } else {
+                    Log.d(TAG, "No media selected")
+                }
+            }
+        val pickProfileMedia =
+            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+// Callback is invoked after the user selects a media item or closes the
+// photo picker.
+                if (uri != null) {
+                    Log.d(TAG, "Selected URI: $uri")
+                    photoUri = uri
+
+                    binding.profileView.setImageURI(uri)
                 } else {
                     Log.d(TAG, "No media selected")
                 }
@@ -70,7 +85,13 @@ class CreateFragment: Fragment() {
             Log.i(TAG, "Open up image picker on device")
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
+
+        binding.btnPickprofileImage.setOnClickListener {
+            Log.i(TAG, "Open up image picker on device")
+            pickProfileMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
         binding.btnSubmit.setOnClickListener {
+//            saveProfilePicture()
             saveThePost()
         }
         getTheCurrentUser()
@@ -90,13 +111,15 @@ class CreateFragment: Fragment() {
             }
     }
 
-    fun convertUriToBase64(uri: Uri?): String {
+    private fun convertUriToBase64(uri: Uri?): String {
 
         val inputStream = context?.contentResolver?.openInputStream(uri!!)
         val bytes = inputStream?.readBytes()
         return Base64.encodeToString(bytes, Base64.DEFAULT)
     }
+
     private val createPostViewModel: CreatePostViewModel by viewModels()
+
     private fun saveThePost(){
         val imageAsString = convertUriToBase64 (photoUri)
         val fileName = "${System.currentTimeMillis()}-photo.jpg"
@@ -111,8 +134,22 @@ class CreateFragment: Fragment() {
         System.currentTimeMillis(),
         signedInUser
         )
+
+        val profileImageUrl = PhotoRepository.get().getImageUrl(fileName)
+        val user = User(
+            signedInUser?.username ?: "Unknown",
+            signedInUser?.age ?: "0",
+            profileImageUrl)
+
+        firestoreDb.collection("users")
+            .document(FirebaseAuth.getInstance().currentUser?.uid ?: return)
+            .set(user)
+
         firestoreDb.collection(  "posts").add(post).addOnCompleteListener{
             this.findNavController().navigate(R.id.navigate_to_postsFragment)
         }
+
     }
+
+
 }
