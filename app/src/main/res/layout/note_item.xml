@@ -7,12 +7,12 @@
     android:layout_margin="4dp"
     app:cardCornerRadius="4dp"
     app:cardElevation="2dp">
-
+    <!-- ConstraintLayout used to arrange elements inside the CardView -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp">
-
+        <!-- TextView for displaying the title of the note -->
         <TextView
             android:id="@+id/noteTitleTextView"
             android:layout_width="0dp"
@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toStartOf="@+id/deleteButton"
             android:layout_marginEnd="8dp"
             tools:text="Note Title" />
-
+        <!-- ImageButton for the delete action, styled with an icon -->
         <ImageButton
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
